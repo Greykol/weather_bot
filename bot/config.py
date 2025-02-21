@@ -5,4 +5,5 @@ load_dotenv()
 
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-FORECA_API_KEY = os.getenv("FORECA_API_KEY")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+BASE_URL = "http://api.weatherapi.com/v1/current.json"
