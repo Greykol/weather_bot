@@ -4,6 +4,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 #from keyboards import weather_keyboard
+from config import WEATHER_EMOJI
 from weather import get_weather_city
 
 
@@ -28,10 +29,12 @@ async def weather_handler(message: Message, state: FSMContext):
     weather_data = get_weather_city(city_name)
 
     if weather_data:
+        condition = weather_data["condition"].lower()  # Делаем строчные буквы
+        emoji = WEATHER_EMOJI.get(condition, "🌍")
         response = (
-            f"Погода в городе {weather_data['city']}, {weather_data['region']}, {weather_data['country']}:\n"
+            f"Погода в городе: {weather_data['city']}, {weather_data['region']}, {weather_data['country']}\n"
             f"Температура: {weather_data['temperature']}°C\n"
-            f"Состояние: {weather_data['condition']}\n"
+            f"Состояние: {weather_data['condition']} {emoji}\n"
             #f"Для наглядности: ![Weather Icon](http://{weather_data['icon']})"
         )
     else:
