@@ -1,9 +1,16 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 
-def weather_keyboard():
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    weather_button = InlineKeyboardButton('Получить прогноз погоды',
-                                          callback_data='get_weather')
-    keyboard.add(weather_button)
+def get_forecast_keyboard():
+    """Функция клавиатуры с вариантами прогноза погоды."""
+    keyboard = ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="Погода на день"),
+             KeyboardButton(text="Погода на 3 дня")],
+            [KeyboardButton(text="Погода на 14 дней")]
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+        input_field_placeholder="Выберите тип прогноза"
+    )
     return keyboard
