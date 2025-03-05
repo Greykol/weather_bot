@@ -15,6 +15,10 @@ def get_weather_city(city: str):
             "region": location["region"],
             "country": location["country"],
             "temperature": current["temp_c"],
+            "wind": current["wind_kph"],
+            "gust": current["gust_mph"],
+            "humidity": current["humidity"],
+            "pressure": current["pressure_mb"],
             "condition": current["condition"]["text"],
         }
         return weather_info

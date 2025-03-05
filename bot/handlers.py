@@ -31,6 +31,9 @@ async def weather_handler(message: types.Message, state: FSMContext):
         response = (
             f"Погода в городе: {weather_data['city']}, {weather_data['region']}, {weather_data['country']}:\n"
             f"🌡 Температура: {weather_data['temperature']}°C\n"
+            f"Ветер: {weather_data['gust']} м/с\n"
+            f"Влажность: {weather_data['humidity']}%\n"
+            f"Давление: {weather_data['pressure']} мм рт. ст.\n"
             f"☁ Состояние: {weather_data['condition']} {emoji}"
         )
         keyboard = get_forecast_keyboard()
