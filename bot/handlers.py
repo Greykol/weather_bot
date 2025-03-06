@@ -2,8 +2,10 @@ from aiogram import types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
-from weather import get_weather_city, get_forecast
-from config import WEATHER_EMOJI
+from weather import (get_weather_city,
+                     get_forecast,
+                     get_weather_emoji,
+                     get_new_image)
 from keyboards import get_forecast_keyboard
 
 
@@ -27,14 +29,14 @@ async def weather_handler(message: types.Message, state: FSMContext):
     if weather_data:
         await state.update_data(city=city_name)
         condition = weather_data["condition"].lower()
-        emoji = WEATHER_EMOJI.get(condition, "🌍")
+        emoji_icon = get_weather_emoji(condition)
         response = (
             f"Погода в городе: {weather_data['city']}, {weather_data['region']}, {weather_data['country']}:\n"
-            f"🌡 Температура: {weather_data['temperature']}°C\n"
-            f"Ветер: {weather_data['gust']} м/с\n"
-            f"Влажность: {weather_data['humidity']}%\n"
-            f"Давление: {weather_data['pressure']} мм рт. ст.\n"
-            f"☁ Состояние: {weather_data['condition']} {emoji}"
+            f"{get_weather_emoji('температура')} Температура: {weather_data['temperature']}°C\n"
+            f"{get_weather_emoji('ветер')} Ветер: {weather_data['gust']} м/с\n"
+            f"{get_weather_emoji('влажность')} Влажность: {weather_data['humidity']}%\n"
+            f"{get_weather_emoji('давление')} Давление: {weather_data['pressure']} мм рт. ст.\n"
+            f"{emoji_icon} Состояние: {weather_data['condition']}"
         )
         keyboard = get_forecast_keyboard()
         await message.answer(response)
@@ -44,22 +46,30 @@ async def weather_handler(message: types.Message, state: FSMContext):
         await message.answer("Город не найден. Попробуйте снова.")
 
 
-async def forecast_handler(message: types.Message, state: FSMContext):
-    """Функция обработчика выбора прогноза погоды."""
+async def forecast_handler(callback_query: types.CallbackQuery,
+                           state: FSMContext):
+    """Функция обработчика выбора прогноза погоды (callback)."""
     user_data = await state.get_data()
     city = user_data.get("city")
-    if not city:
-        await message.answer("Пожалуйста, сначала введите название города.")
-        await state.set_state(WeatherState.waiting_for_city)
+
+
+    try:
+        days = int(callback_query.data.split("_")[1])
+    except ValueError:
+        await callback_query.message.answer("Ошибка обработки данных.")
         return
-    if message.text == "Погода на день":
-        forecast = get_forecast(city, 1)
-    elif message.text == "Погода на 3 дня":
-        forecast = get_forecast(city, 3)
-    elif message.text == "Погода на 14 дней":
-        forecast = get_forecast(city, 14)
-    else:
-        await message.answer("Выберите один из предложенных вариантов.")
-        return
-    await message.answer(forecast)
+
+    forecast = get_forecast(city, days)
+    await callback_query.message.answer(forecast)
     await state.clear()
+    await callback_query.answer()
+
+
+async def image_handler(callback_query: types.CallbackQuery):
+    """Функция обработчика кнопки, отправляющей картинку."""
+    image_url = get_new_image()
+    if image_url:
+        await callback_query.message.answer_photo(photo=image_url)
+    else:
+        await callback_query.message.answer("Не удалось загрузить картинку.")
+    await callback_query.answer()
