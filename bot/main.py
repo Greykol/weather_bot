@@ -5,7 +5,8 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import TELEGRAM_TOKEN
-from handlers import (start_handler,
+from handlers import (hour_forecast_handler,
+                      start_handler,
                       weather_handler,
                       forecast_handler,
                       image_handler)
@@ -19,6 +20,8 @@ dp = Dispatcher()
 
 dp.message.register(start_handler, Command("start"))
 dp.message.register(weather_handler)
+dp.callback_query.register(hour_forecast_handler,
+                           lambda c: c.data == "hourly_forecast")
 dp.callback_query.register(forecast_handler,
                            lambda c: c.data.startswith("forecast_"))
 dp.callback_query.register(image_handler,

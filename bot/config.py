@@ -7,8 +7,8 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 BASE_CURRENT_URL = "http://api.weatherapi.com/v1/current.json"
 BASE_FORECAST_URL = "http://api.weatherapi.com/v1/forecast.json"
-URL = 'https://api.thecatapi.com/v1/images/search'
-NEW_URL = 'https://api.thedogapi.com/v1/images/search'
+URL_CATS = 'https://api.thecatapi.com/v1/images/search'
+URL_DOGS = 'https://api.thedogapi.com/v1/images/search'
 WEATHER_EMOJI_MAP = {
     "ясно": ":sun:",
     "солнечно": ":sun_with_face:",

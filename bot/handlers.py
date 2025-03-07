@@ -2,7 +2,8 @@ from aiogram import types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
-from weather import (get_weather_city,
+from weather import (get_hour_forecast,
+                     get_weather_city,
                      get_forecast,
                      get_weather_emoji,
                      get_new_image)
@@ -46,19 +47,29 @@ async def weather_handler(message: types.Message, state: FSMContext):
         await message.answer("Город не найден. Попробуйте снова.")
 
 
+async def hour_forecast_handler(callback_query: types.CallbackQuery,
+                                  state: FSMContext):
+    """Функция обработки почасового прогноза."""
+    user_data = await state.get_data()
+    city = user_data.get("city")
+    if not city:
+        await callback_query.message.answer("Сначала введите город.")
+        return
+    forecast = get_hour_forecast(city)
+    await callback_query.message.answer(forecast)
+    await callback_query.answer()
+
+
 async def forecast_handler(callback_query: types.CallbackQuery,
                            state: FSMContext):
     """Функция обработчика выбора прогноза погоды (callback)."""
     user_data = await state.get_data()
     city = user_data.get("city")
-
-
     try:
         days = int(callback_query.data.split("_")[1])
     except ValueError:
         await callback_query.message.answer("Ошибка обработки данных.")
         return
-
     forecast = get_forecast(city, days)
     await callback_query.message.answer(forecast)
     await state.clear()
