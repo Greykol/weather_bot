@@ -22,6 +22,7 @@ def get_weather_emoji(condition: str) -> str:
 
 
 def get_weather_city(city: str):
+    """Получает текущую погоду в указанном городе."""
     url = f'{BASE_CURRENT_URL}?key={WEATHER_API_KEY}&q={city}&lang=ru'
     response = requests.get(url)
     if response.status_code == 200:
@@ -45,6 +46,7 @@ def get_weather_city(city: str):
 
 
 def get_hour_forecast(city: str):
+    """Почасовой прогноз погоды на 24 часа, отображая данные 6 часов."""
     url = f"{BASE_FORECAST_URL}?key={WEATHER_API_KEY}&q={city}&days=1&lang=ru"
     response = requests.get(url)
     if response.status_code == 200:
@@ -52,24 +54,27 @@ def get_hour_forecast(city: str):
         forecast_hours = data["forecast"]["forecastday"][0]["hour"]
         forecast_text = f"Почасовой прогноз в {city}:\n"
         for hour in forecast_hours:
-            time = hour["time"].split(" ")[1]
-            temp = hour["temp_c"]
-            condition = hour["condition"]["text"]
-            wind = hour["wind_kph"]
-            cloud = hour["cloud"]
-            forecast_text += (
-                f"\n🕒 Время: {time}\n"
-                f"Температура: {temp}°C\n"
-                f"Состояние: {condition}\n"
-                f"Ветер {wind} км/ч\n"
-                f"Облачность: {cloud}%\n"
-            )
+            hour_time = int(hour["time"].split(" ")[1].split(":")[0])
+            if hour_time % 6 == 0:
+                time = hour["time"].split(" ")[1]
+                temp = hour["temp_c"]
+                condition = hour["condition"]["text"]
+                wind = hour["wind_kph"]
+                cloud = hour["cloud"]
+                forecast_text += (
+                    f"\n{emoji.emojize(WEATHER_EMOJI_MAP['time'], language='alias')} Время: {time}\n"
+                    f"Температура: {temp}°C\n"
+                    f"Состояние: {condition}\n"
+                    f"Ветер {wind} км/ч\n"
+                    f"Облачность: {cloud}%\n"
+                )
         return forecast_text
     else:
         return "Не удалось получить почасовой прогноз."
 
 
 def get_forecast(city: str, days: int):
+    """Получает прогноз погоды на указанное количество дней."""
     url = f"{BASE_FORECAST_URL}/forecast.json?key={WEATHER_API_KEY}&q={city}&days={days}&lang=ru"
     response = requests.get(url)
     if response.status_code == 200:
@@ -85,12 +90,12 @@ def get_forecast(city: str, days: int):
             sunset = convert_h(day["astro"]["sunset"])
             condition = day["day"]["condition"]["text"]
             forecast_text += (
-                f"\n📅 Дата: {date}\n"
-                f"🌡 Температура: {temp_min}°C - {temp_max}°C\n"
-                f"🌧 Вероятность дождя: {chance_rain}%\n"
-                f"🌅 Восход солнца: {sunrise}\n"
-                f"🌇 Заход солнца: {sunset}\n"
-                f"☁ Состояние: {condition}\n"
+                f"\n{emoji.emojize(WEATHER_EMOJI_MAP['date'], language='alias')} Дата: {date}\n"
+                f"{emoji.emojize(WEATHER_EMOJI_MAP['temp'], language='alias')} Температура: {temp_min}°C - {temp_max}°C\n"
+                f"{emoji.emojize(WEATHER_EMOJI_MAP['rain'], language='alias')} Вероятность дождя: {chance_rain}%\n"
+                f"{emoji.emojize(WEATHER_EMOJI_MAP['sunrise'], language='alias')} Восход солнца: {sunrise}\n"
+                f"{emoji.emojize(WEATHER_EMOJI_MAP['sunset'], language='alias')} Заход солнца: {sunset}\n"
+                f"{emoji.emojize(WEATHER_EMOJI_MAP['condition'], language='alias')} Состояние: {condition}\n"
             )
         return forecast_text
     else:
@@ -98,6 +103,7 @@ def get_forecast(city: str, days: int):
 
 
 def get_new_image():
+    """Получает случайное изображение (кота или собаки) из API."""
     try:
         response = requests.get(URL_CATS)
         response.raise_for_status()

@@ -13,8 +13,8 @@ def get_forecast_keyboard():
         [
             InlineKeyboardButton(text="Прогноз на 3 дня",
                                  callback_data="forecast_3"),
-            InlineKeyboardButton(text="Прогноз на 14 дней",
-                                 callback_data="forecast_14")
+#            InlineKeyboardButton(text="Прогноз на 14 дней",
+#                                callback_data="forecast_14")
         ],
         [
             InlineKeyboardButton(text="Милота дня",

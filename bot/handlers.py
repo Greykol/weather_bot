@@ -48,7 +48,7 @@ async def weather_handler(message: types.Message, state: FSMContext):
 
 
 async def hour_forecast_handler(callback_query: types.CallbackQuery,
-                                  state: FSMContext):
+                                state: FSMContext):
     """Функция обработки почасового прогноза."""
     user_data = await state.get_data()
     city = user_data.get("city")
@@ -65,14 +65,17 @@ async def forecast_handler(callback_query: types.CallbackQuery,
     """Функция обработчика выбора прогноза погоды (callback)."""
     user_data = await state.get_data()
     city = user_data.get("city")
+    if not city:
+        await callback_query.message.answer("Город не найден.")
+        return
     try:
         days = int(callback_query.data.split("_")[1])
     except ValueError:
         await callback_query.message.answer("Ошибка обработки данных.")
         return
+
     forecast = get_forecast(city, days)
     await callback_query.message.answer(forecast)
-    await state.clear()
     await callback_query.answer()
 
 

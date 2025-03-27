@@ -27,5 +27,12 @@ WEATHER_EMOJI_MAP = {
     "температура": ":thermometer:",
     "ветер": ":wind_face:",
     "влажность": ":droplet:",
-    "давление": ":compression:"
+    "давление": ":compression:",
+    "date": ":calendar:",
+    "temp": ":thermometer:",
+    "rain": ":umbrella:",
+    "sunrise": ":sunrise:",
+    "sunset": ":city_sunset:",
+    "condition": ":cloud:",
+    "time": ":clock3:"
 }
