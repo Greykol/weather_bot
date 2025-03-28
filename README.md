@@ -35,7 +35,9 @@
   pip install -r requirements.txt
   ```
 6. Создать в папке .env.
-   Для работы API надо зарегистрироваться на ```https://www.weatherapi.com/```.
+   Для работы API надо зарегистрироваться на ```
+   https://www.weatherapi.com/
+   ```.
    После добавить ключ в .env и туда же id бота.
 
 7. Запустить проект:
